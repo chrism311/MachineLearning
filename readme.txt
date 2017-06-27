@@ -1,1 +1,1 @@
-This repository contains the EEG paper.
+EEG Paper

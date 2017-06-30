@@ -7,7 +7,7 @@
 \usepackage{tabularx}
 \usepackage{hhline}
 \usepackage{colortbl}
-\renewcommand\arraystretch{1.2}
+\renewcommand\arraystretch{1.1}
 \begin{document}
 \author{Christian Miranda}
 \title{Machine learning based EEG classification}
@@ -22,6 +22,9 @@ out and compare which ones perform the best.
 
 \section{Introduction}
 Using machine learning to make predictions and classify data is not a new concept, but is one that warrants further exploration. 
+A few examples of where machine learning is used in is with self-driving cars, facial recognition, and apps that recognize your taste in music or movies. 
+A very interesting use in the medical field is creating an artificial pancreas that uses machine learning \cite{diabetes} to make predictions in how much insulin to 
+release into the wearer.
 The University of California Irvine had conducted an experiment with EEG signals \cite{classsvm}, having subjects stay in a state of rest followed by them planning to do a voluntary movement with their right hand. 
 UCI used various methods to interpret the EEG signals and in the end, classify them into one of the two labels, asleep or planning. The methods used in this work were classifiers from Scikit Learn to work on UCI's dataset to attempt to achive similar or better results. Multiple classifiers were used in order to observe which one performed the best in regards 
 to accuracy. Some of the classifiers used here are similar to ones used by UCI and others that have used the same dataset \cite{fuzzy} which, the results to said tests, will be compared to the results of this report.
@@ -34,17 +37,24 @@ the program doesn't work just by storing and retrieving data, it has a "learning
 One task of these machine learning algorithms is classification, using them to classify the giving data based on the class's or ``labels" from the training data. 
 
 \section{EEG Basics}
-\todo{Describe the basic EEG signals}
-The EEG signals are expressd in time and frequencies, gathered from electrodes connected to a subjects head. 
-Mu waves are located in the band $7 -13\si{\hertz}$ and Beta waves are at \SI{13}{\hertz} and above \cite{classsvm} which, 
-studies have shown that these waves were related to planning body movement.
+The EEG signals are expressd in time and frequency, gathered from electrodes connected to a subjects head. The recording capture the waves, 
+their amplitudes being the frequency, emitted from the subjects brain.  
+When it comes to EEG test in sleep, classifing the sleep stages of a subject is common goal in many experiments.
+There are five stages of sleep, stage 1, 2, 3, 4, and REM (rapid eye movement). When classifing the sleep stages, indicators 
+have to be present in the data, which indicate what sleep state in the data \cite{auto}. These indicators for sleep stage classification
+are sets of waves at certain frequencies. A graphical representation of various sleep stages was done in an experiment, resulting in a base 
+to compare to the results of automated programs that seek to perform the same results. Alpha waves of bandwidth 8 to 12 Hz, relate to state 
+of being awake. Theta waves of range to 4 to 8 Hz are of stage 1, 2 and, REM sleep.
+Delta waves of 0.5 to 4 Hz are of stages 3 and 4. Lastly, the K complex indicator are slow transient waves that are related to stage 2.
+
+The waves of interest in this work are Mu waves that are located in the band $7 - 13\si{\hertz}$ and Beta waves are at \SI{13}{\hertz} and above \cite{classsvm}. 
+Studies have shown that MU waves were related to planning body movement \cite{classsvm}.
 The UCI tests dealt with EEG signals recorded from the subjects participating in the experiment.  UCI's dataset, which consists of $182$ subsets and $13$ attributes \cite{classsvm}, 
 came from the EEG signals. $12$ of those attributes are the features and the last attribute is the label of the subset \cite{online}. 
 The subjects were asked to sleep for five minutes, then wake them up, asking them to plan a movement for the following five seconds \cite{classsvm}. This was repeated over 
 the course of about 30 minutes. Each subset is a five second fragment of the tests.
 
 \section{Preprocessing}
-\todo{Maybe a bit about the wavelet transform.  We will see}
 The EEG signals had to go through a transformation process before being used.
 The features of the subsets were extracted from the EEG signals using a wavelet packet 
 transform \cite{online}. Coefficients are produced by the transform, called wavelets \cite{wavelet}. These wavelet coefficients are treated as ``features" that describe the 
@@ -59,21 +69,21 @@ We used the following processing pipeline for obtaining the results:
 \item Scikit-learn
 \end{enumerate}
 
-Scikit-learn \todo{Create the citation for scikit-learn.  This can be obtained from the website} is a Python-based machine learning library \cite{scikit} that contains many tools and algorithms that are used to make predictions when introduced to new data. 
+Scikit-learn is a Python-based machine learning library \cite{scikit} that contains many tools and algorithms that are used to make predictions when introduced to new data. 
 
 The raw dataset was extracted from UCI's repository as a text file, and by using a Python script, the data was able to be expressed as numerical arrays, ready for use by the Scikit Learn library. 
 
 \subsection{K-Nearest Neighbor}
 The first classification method used was the k-Nearest Neighbor algorithm.  This algorithm works by, in newly-introduced data, 
 it recognizes patterns according to data around certain data points \cite{random}. The k-NN models use a user-defined parameter, $n$, that defines the 
-number of closest training examples. The neighbors weigh in, in the decision of which class that the data points will fall under. \todo{needs some work}
+number of closest training examples. The neighbors weigh in, in the decision of which class that the data points will fall under.
 
 \subsection{Support Vector Machines}
 The second classifier that is being used is the Support Vector Machine. SVM models represent the data that was used to train itself, as a hyperplane \cite{classsvm}. The points of a specific class are mapped out as a group with gaps dividing all groups. So when the SVM is ran with the testing data, the data will fall under one of the groups. 
 
 \subsection{Random Forest}
 The last model used for classification is the Random Forest classifier. Random forest method is a type of Ensemble learning that uses a combination of several methods that make predictions and at the end, all the methods are used to make one final major prediction \cite{random}. When training the random forest model, it randomly creates "trees" using the training data. 
-These trees are called decision trees due to the fact that they are made up of multiple decisions that are used to classify the data each tree is presented with. This is one of the user-defined parameters , $n$ estimators, that tells the classifier how many trees to make \cite{skforest}. Another parameter is "max depth," which defines how many nodes are in each trees \cite{skforest}. Apparently, many of these decision-making trees are not very helpful on their own. So the way that the classifier works is that among the many bad trees there are still few that are very useful. When the classifer is making a prediction, the date gets passed through all the trees, where each tree assigns a label on the data \cite{random}. In the end, all the values given by the trees are summed up to make the final descision. The decisions from the non-helpful trees sometimes cancel out with the others, which makes the decisions from the good models to be more prominent.
+These trees are called decision trees due to the fact that they are made up of multiple decisions that are used to classify the data each tree is presented with. This is one of the user-defined parameters , $n$ estimators, that tells the classifier how many trees to make \cite{scikit}. Another parameter is "max depth," which defines how many nodes are in each trees \cite{scikit}. Apparently, many of these decision-making trees are not very helpful on their own. So the way that the classifier works is that among the many bad trees there are still few that are very useful. When the classifer is making a prediction, the date gets passed through all the trees, where each tree assigns a label on the data \cite{random}. In the end, all the values given by the trees are summed up to make the final descision. The decisions from the non-helpful trees sometimes cancel out with the others, which makes the decisions from the good models to be more prominent.
 
 \subsection{Model Selection}
 The data that is used for the classifiers has to be properly prepared for use. Out of the $182$ samples from the dataset, a certain percentage has to be set aside to train the algorithms in the classifiers, leaving the rest of the samples to be used as testing data. The reason for this is the fact that it is not practical to just use all of the data to train the classifier and then go back with the same data to test it. In that situation, you're leaving the classifier to predict something it already knows. 
@@ -85,7 +95,6 @@ The second cross-validator is Leave One Out. It runs through the dataset and put
 For k-fold and Cross-Val Score, each validation, which is again determined by the CV parameter, outputs a percentage-accuracy score. So all scores in each simulation were appended into an empty array and averaged at the end of the simulations to determine the overall accuracy of each run.
 
 \section{Results}
-\todo{mention results from the paper using the dataset.  You do this, but mention the methods that they used and whether they used cross validation or not}
 Different classifiers were used to see how each one performed in terms of accuracy, since each one works differently. The reason why different data selection models 
 were used was to,
 \begin{description}
@@ -117,7 +126,7 @@ simpily trained using all of the subsets, and made to predict the labels using t
 Starting with the k-NN classifier, since each subset falls under the class of "asleep" or "planning," the nearest neighbor parameter 
 was set to be "2." The idea is that every subset will look into the nearest two points and make a split decision between the two labels. 
 Table 2 shows the following results.
-\begin{table*}[h]
+\begin{table*}
 	\noindent\makebox[\linewidth]{
 	\begin{tabular}{lccccccccc}
 		\toprule
@@ -134,7 +143,7 @@ Table 2 shows the following results.
 Next is the SVM classifier, with Table 3 showing the results. The SVM has a parameter called a kernel. Kernels for the SVM include Linear, Polynomial, and Radial Basis Function. 
 For the RBF, it also has a input variable,  $\sigma$, and different values were experiemented with to find the best parameter. The kernel RBF with its 
 variable $\sigma$ = 5, was found to be the best choice.
-\begin{table*}[h]
+\begin{table*}
 	\noindent\makebox[\linewidth]{
 	\begin{tabular}{lccccccccc}
 		\toprule
@@ -150,7 +159,7 @@ variable $\sigma$ = 5, was found to be the best choice.
 
 Table 4 contains the results of the Random Forest. The $n$ estimators parameter was chosen to be $30$ and the depth of each tree to be $3$. 
 Due to the nature of the Random Forest, each simulation was ran 15 times, accuracies collected, and averaged.
-\begin{table*}[h]
+\begin{table*}
 	\noindent\makebox[\linewidth]{
 	\begin{tabular}{lccccccccc}
 		\toprule

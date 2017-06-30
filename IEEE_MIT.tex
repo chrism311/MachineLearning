@@ -9,27 +9,24 @@
 \usepackage{colortbl}
 \renewcommand\arraystretch{1.1}
 \begin{document}
-\author{Christian Miranda}
+\author{Christian Miranda\\Department of Electrical Engineering\\University of Texas at Tyler}
 \title{Machine learning based EEG classification}
 \maketitle
 
 \begin{abstract}
-The focus of this paper is looking into the use of machine learning to perform classification tasks involving EEG signals.
-The data being used contains EEG recordings along with their corresponding label. So different classifiers were used to 
-to classify said data, to its correct label. Various tools and different classifier parameters are used to seek 
-out and compare which ones perform the best. 
+In this research we apply 3 different machine learning algorithms to EEG signals in order to determine whether the patient is in a planning state or a relaxed state.  We achieved superior results to previous research in this area, thereby validating a machine learning based approach to this problem.
+%The focus of this paper is looking into the use of machine learning to perform classification tasks involving EEG signals.  The data being used contains EEG recordings along with their corresponding label. So different classifiers were used to to classify said data, to its correct label. Various tools and different classifier parameters are used to seek out and compare which ones perform the best. 
 \end{abstract}
 
 \section{Introduction}
-Using machine learning to make predictions and classify data is not a new concept, but is one that warrants further exploration. 
-A few examples of where machine learning is used in is with self-driving cars, facial recognition, and apps that recognize your taste in music or movies. 
-A very interesting use in the medical field is creating an artificial pancreas that uses machine learning \cite{diabetes} to make predictions in how much insulin to 
-release into the wearer.
-The University of California Irvine had conducted an experiment with EEG signals \cite{classsvm}, having subjects stay in a state of rest followed by them planning to do a voluntary movement with their right hand. 
-UCI used various methods to interpret the EEG signals and in the end, classify them into one of the two labels, asleep or planning. The methods used in this work were classifiers from Scikit Learn to work on UCI's dataset to attempt to achive similar or better results. Multiple classifiers were used in order to observe which one performed the best in regards 
-to accuracy. Some of the classifiers used here are similar to ones used by UCI and others that have used the same dataset \cite{fuzzy} which, the results to said tests, will be compared to the results of this report.
+Using machine learning to make predictions and classify data is a relatively new field with wide applicability.  For instance machine learning has been used in self-driving cars, facial recognition, and apps that recognize your taste in music or movies. \todo{cite these references}.  Machine learning methods can have a very large societal impact as well, for example in the medical field researchers are creating an artificial pancreas that uses machine learning \cite{diabetes} to make predict the amount of insulin to release into the wearer.
+
+For this research we use data obtained by the University of California Irvine \todo{verify this...I believe that UCI is only the repository}in which researchers conducted an experiment with EEG signals \cite{classsvm}.  The subjects stayed in a state of rest followed by them planning to do a voluntary movement with their right hand. UCI \todo{again check} used various methods to interpret the EEG signals and in the end, classify them into one of the two labels, asleep or planning. 
+
+We use newer machine learning methods to attempt to achieve similar or better results. Multiple classifiers were used in order to observe which one performed the best in regards to accuracy. Some of the classifiers used here are similar to ones used by UCI and others that have used the same dataset \cite{fuzzy} which, the results to said tests, will be compared to the results of this report.
 
 \section{Machine Learning Basics}
+Machine learning algorithms 
 The algorithms find trends or patterns in the data and use them to make its decision-making but have to be trained first before it's able to output any results. 
 The patterns that it looks for is all based on the preliminary data that it is exposed to, to train itself. These algorithms are powerful tools due to the fact that 
 the program doesn't work just by storing and retrieving data, it has a "learning" nature and can ``think" to predict future results with the data that it is given.
@@ -37,29 +34,20 @@ the program doesn't work just by storing and retrieving data, it has a "learning
 One task of these machine learning algorithms is classification, using them to classify the giving data based on the class's or ``labels" from the training data. 
 
 \section{EEG Basics}
-The EEG signals are expressd in time and frequency, gathered from electrodes connected to a subjects head. The recording capture the waves, 
-their amplitudes being the frequency, emitted from the subjects brain.  
-When it comes to EEG test in sleep, classifing the sleep stages of a subject is common goal in many experiments.
-There are five stages of sleep, stage 1, 2, 3, 4, and REM (rapid eye movement). When classifing the sleep stages, indicators 
-have to be present in the data, which indicate what sleep state in the data \cite{auto}. These indicators for sleep stage classification
-are sets of waves at certain frequencies. A graphical representation of various sleep stages was done in an experiment, resulting in a base 
-to compare to the results of automated programs that seek to perform the same results. Alpha waves of bandwidth 8 to 12 Hz, relate to state 
-of being awake. Theta waves of range to 4 to 8 Hz are of stage 1, 2 and, REM sleep.
-Delta waves of 0.5 to 4 Hz are of stages 3 and 4. Lastly, the K complex indicator are slow transient waves that are related to stage 2.
+EEG signals are functions of time and frequency, captured and recorded from electrodes connected to a subjects head. A recording captures these waves from the electrodes, their amplitudes being the frequency, emitted from the subjects brain.  
+Using EEG to classify different stages of sleep is a very important topic \todo{find source}% a subject is common goal in many experiments.
 
-The waves of interest in this work are Mu waves that are located in the band $7 - 13\si{\hertz}$ and Beta waves are at \SI{13}{\hertz} and above \cite{classsvm}. 
-Studies have shown that MU waves were related to planning body movement \cite{classsvm}.
-The UCI tests dealt with EEG signals recorded from the subjects participating in the experiment.  UCI's dataset, which consists of $182$ subsets and $13$ attributes \cite{classsvm}, 
-came from the EEG signals. $12$ of those attributes are the features and the last attribute is the label of the subset \cite{online}. 
-The subjects were asked to sleep for five minutes, then wake them up, asking them to plan a movement for the following five seconds \cite{classsvm}. This was repeated over 
-the course of about 30 minutes. Each subset is a five second fragment of the tests.
+There are five stages of sleep:  stage 1, 2, 3, 4, and REM (rapid eye movement). When classifying the sleep stages, indicators 
+have to be present in the data, which indicate what sleep state in the data \cite{auto}. These indicators for sleep stage classification are sets of waves at certain frequencies. A graphical representation of various sleep stages was done in an experiment, resulting in a base to compare to the results of automated programs that seek to perform the same results. Alpha waves of bandwidth $8-12\si{\hertz}$, relate to state of being awake. Theta waves of range to $4-8\si{\hertz}$ Hz are of stage 1, 2 and, REM sleep.  Delta waves of $0.5-4\si{\hertz}$ are present in stages 3 and 4. Lastly, the K complex indicator are slow transient waves that are related to stage 2.  The waves of interest in this work are Mu waves that are located in the band $7 - 13\si{\hertz}$ and Beta waves are at \SI{13}{\hertz} and above \cite{classsvm}. Studies have shown that MU waves were related to planning body movement \cite{classsvm}.
+
+\section{Dataset description and generation}
+The UCI tests\todo{check source} dealt with EEG signals recorded from the subjects participating in the experiment.  UCI's \todo{same here}dataset, which consists of $182$ subsets and $13$ attributes \cite{classsvm}, came from the EEG signals. $12$ of those attributes are the features and the last attribute is the label of the subset \cite{online}. 
+The subjects were asked to sleep for five minutes, then wake them up, asking them to plan a movement for the following five seconds \cite{classsvm}. This was repeated over the course of about 30 minutes. Each subset is a five second fragment of the tests.
 
 \section{Preprocessing}
-The EEG signals had to go through a transformation process before being used.
-The features of the subsets were extracted from the EEG signals using a wavelet packet 
-transform \cite{online}. Coefficients are produced by the transform, called wavelets \cite{wavelet}. These wavelet coefficients are treated as ``features" that describe the 
-original signal. The wavelet transform is similar to the Fourier Transform, so the features contain similar time-frequency characteristics as the FT \cite{packet}. 
-The features ultimately would describe where the subsets fall in the $7-13\si{\hertz}$ band that gives insight into whether the subject is relaxed or planning a movement.
+To be usable in a machine learning algorithm, the EEG signals must be undergo preprocessing.  This preprocessing stage is typically signal conditioning followed by feature extraction.  This dataset was produced by transforming the EEG signals using a wavelet packet transform \cite{wavelet} . Coefficients are produced by the transform, called wavelets. The wavelet transform has similar qualities to the Fourier Transform, but also provides time-frequency characteristics% as the FT \cite{packet}. 
+
+The features ultimately would describe where the subsets fall in the $7-13\si{\hertz}$ band where we can determine whether the subject is relaxed or planning a movement.
 
 \section{Materials and Methods}
 We used the following processing pipeline for obtaining the results:
@@ -102,13 +90,13 @@ were used was to,
 	\item[$\bullet$] observe that there is at least some consistency in how each classifier performs,
 	\item[$\bullet$] and finally, to see how much the amount of training data used to train with, affects the accuracy.
 \end{description}
-\noindent With all that said, each classifer was ran numerous times at different cross validations for the k-fold and Cross-Val Score data selectors. Leave One Out leaves out 
-specifically, one, subset everytime, meaning it uses the most training data.
+\noindent With all that said, each classifer was ran numerous times at different cross validations for the k-fold and Cross-Val Score data selectors. Leave One Out leaves out specifically, one, subset everytime, meaning it uses the most training data.
 
-In addtion to using these methods to split the data and for cross-validation, quick measurements were made using all the data to calculate the training accuracy. The three classifiers were 
-simpily trained using all of the subsets, and made to predict the labels using the exact same data. Table 1 shows the training accuracies.
+In addtion to using these methods to split the data and for cross-validation, quick measurements were made using all the data to calculate the training accuracy. The three classifiers were simply trained using all of the subsets, and made to predict the labels using the exact same data. Table 1 shows the training accuracies.
 
 \begin{table}[h]
+	\caption{Training Accuracies}
+	\label{table1}
 \noindent\makebox[\linewidth]{
 	\begin{tabular}{lcccc}
 		\toprule
@@ -119,14 +107,15 @@ simpily trained using all of the subsets, and made to predict the labels using t
 		\bottomrule
 	\end{tabular}
 }	
-	\caption{Training Accuracies}
-	\label{table1}
+
 \end{table}
 
 Starting with the k-NN classifier, since each subset falls under the class of "asleep" or "planning," the nearest neighbor parameter 
 was set to be "2." The idea is that every subset will look into the nearest two points and make a split decision between the two labels. 
-Table 2 shows the following results.
+Table \ref{table2} shows the following results.
 \begin{table*}
+	\caption{Accuracies for k-NN Classifier}
+	\label{table2}
 	\noindent\makebox[\linewidth]{
 	\begin{tabular}{lccccccccc}
 		\toprule
@@ -136,14 +125,13 @@ Table 2 shows the following results.
 		Accuracy & \SI{70.33}{\percent} & \SI{66.46}{\percent} & \SI{69.21}{\percent} & \SI{70.34}{\percent} & \SI{70.38}{\percent} & \SI{69.28}{\percent} & \SI{70.4}{\percent} & \SI{69.04}{\percent} & \SI{70.79}{\percent}\\
 		\bottomrule		
 	\end{tabular}}
-	\caption{Accuracies for k-NN Classifier}
-	\label{table2}
+
 \end{table*}
 
-Next is the SVM classifier, with Table 3 showing the results. The SVM has a parameter called a kernel. Kernels for the SVM include Linear, Polynomial, and Radial Basis Function. 
-For the RBF, it also has a input variable,  $\sigma$, and different values were experiemented with to find the best parameter. The kernel RBF with its 
-variable $\sigma$ = 5, was found to be the best choice.
+Next is the SVM classifier, with Table \ref{table3} showing the results. The SVM has a parameter called a kernel. Kernels for the SVM include Linear, Polynomial, and Radial Basis Function.  For the RBF, it also has a input variable,  $\sigma$, and different values were experiemented with to find the best parameter. The kernel RBF with its variable $\sigma=5$, was found to be the best choice.
 \begin{table*}
+	\caption{Accuracies for SVM Classifier}
+	\label{table3}
 	\noindent\makebox[\linewidth]{
 	\begin{tabular}{lccccccccc}
 		\toprule
@@ -153,13 +141,13 @@ variable $\sigma$ = 5, was found to be the best choice.
 		Accuracy & \SI{73.63}{\percent} & \SI{71.38}{\percent} & \SI{72.49}{\percent} & \SI{71.37}{\percent} & \SI{73.61}{\percent} & \SI{72.55}{\percent} & \SI{72.57}{\percent} & \SI{73.87}{\percent} & \SI{72.92}{\percent}\\
 		\bottomrule		
 	\end{tabular}}
-	\caption{Accuracies for SVM Classifier}
-	\label{table3}
+
 \end{table*}
 
-Table 4 contains the results of the Random Forest. The $n$ estimators parameter was chosen to be $30$ and the depth of each tree to be $3$. 
-Due to the nature of the Random Forest, each simulation was ran 15 times, accuracies collected, and averaged.
+Table \ref{table4} contains the results of the Random Forest. The $n$ estimators parameter was chosen to be $30$ and the depth of each tree to be $3$. Due to the nature of the Random Forest, each simulation was ran 15 times, accuracies collected, and averaged.
 \begin{table*}
+	\caption{Accuracies for Random Forest Classifier}
+	\label{table4}
 	\noindent\makebox[\linewidth]{
 	\begin{tabular}{lccccccccc}
 		\toprule
@@ -169,12 +157,14 @@ Due to the nature of the Random Forest, each simulation was ran 15 times, accura
 		Accuracy & \SI{71.28}{\percent} & \SI{70.5}{\percent} & \SI{70.26}{\percent} & \SI{71.37}{\percent} & \SI{71.5}{\percent} & \SI{71.15}{\percent} & \SI{71.5}{\percent} & \SI{71.55}{\percent} & \SI{71.5}{\percent}\\
 		\bottomrule		
 	\end{tabular}}
-	\caption{Accuracies for Random Forest Classifier}
-	\label{table4}
+
 \end{table*}
 
-Table 5 shows the Confusion Matrix of the SVM classifier. In this case, 36 subsets were used for testing.
+Table \ref{table5} shows the Confusion Matrix of the SVM classifier. In this case, $36$ subsets were used for testing.
 \begin{table}
+\centering
+\caption{SVM Confusion Matrix}
+\label{table5}
 \begin{tabularx}{.7\textwidth}{>{\bfseries} c | c c | }
 & Relaxed & \multicolumn{1}{c}{Planning}\\
 \hhline{---}
@@ -182,15 +172,12 @@ Relaxed & 20 (True Pos.) \cellcolor[gray]{.8}& 0 (False Neg.) \\
 Planning & 16 (False Pos.) & 0 (True Neg.) \cellcolor[gray]{.8} \\
 \hhline{~--}
 \end{tabularx}
-\caption{SVM Confusion Matrix}
-\label{table5}
+
 \end{table}
 
 UCI's methodology consisted of also using SVMs \cite{classsvm}. The used half of the dataset to train with, and the other half to test it. 
 They used a RBF kernel with a parameter, $\sigma = 1.2$. They simulated the SVM ten times, averaged the accuracies, and achieved a score of \SI{71.43}{\percent} \cite{classsvm}.
-The results in experiment \cite{fuzzy}, using simulations with classifiers similar to Random Forest, resulted in an accuracy of \SI{71.42}{\percent}. They used half of UCIs dataset for 
-training and the other for testing. After that, a two-fold cross-validation was perfromed six times. All scores were averaged as well.
-For comparison, we used a train/test split function in Scikit Learn that simply splits the data as was done in the papers previously mentioned. The SVM algorithm we used 
+The results in experiment \cite{fuzzy}, using simulations with classifiers similar to Random Forest, resulted in an accuracy of \SI{71.42}{\percent}. They used half of UCIs dataset for training and the other for testing. After that, a two-fold cross-validation was perfromed six times. All scores were averaged as well.  For comparison, we used a train/test split function in Scikit Learn that simply splits the data as was done in the papers previously mentioned. The SVM algorithm we used 
 was changed to use a parameter of $\sigma = 1.2$, simulated ten times, and averaged. The Random Forest classifier used the k-fold again, except for now, $k = 2$ and will be 
 ran 6 times and averaged with the score it achieves from the train/test split. Through these simulations, our SVM achived a \SI{71.42}{\percent} score and our 
 Random Forest achieved a score of \SI{70.20}{\percent}.

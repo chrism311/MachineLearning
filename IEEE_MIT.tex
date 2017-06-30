@@ -22,26 +22,20 @@ out and compare which ones perform the best.
 \section{Introduction}
 Using machine learning to make predictions and classify data is not a new concept, but is one that warrants further exploration. 
 The University of California Irvine had conducted an experiment with EEG signals \cite{classsvm}, having subjects stay in a state of rest followed by them planning to do a voluntary movement with their right hand. 
-UCI used various methods to interpret the EEG signals and in the end, classify them into one of the two labels, asleep or planning. The methods used in this work were classifiers from 
-Scikit Learn to work on UCI's dataset to attempt to achive similar or better results. Multiple classifiers were used in order to observe which one performed the best in regards 
+UCI used various methods to interpret the EEG signals and in the end, classify them into one of the two labels, asleep or planning. The methods used in this work were classifiers from Scikit Learn to work on UCI's dataset to attempt to achive similar or better results. Multiple classifiers were used in order to observe which one performed the best in regards 
 to accuracy. Some of the classifiers used here are similar to ones used by UCI and others that have used the same dataset \cite{fuzzy} which, the results to said tests, will be compared to the results of this report.
 
 \section{Machine Learning Basics}
-The algorithms find trends or patterns in the data and use them to make its decision-making but have to be trained first before it's able to output any results.  The patterns that it looks for is all based on the preliminary data that it is exposed to, to train itself. These algorithms are powerful tools due to the fact that the program doesn't work just by storing and retreiving data, it has a "learning" nature and can ``think" to predict future results with the data that it is given.
+The algorithms find trends or patterns in the data and use them to make its decision-making but have to be trained first before it's able to output any results.  The patterns that it looks for is all based on the preliminary data that it is exposed to, to train itself. These algorithms are powerful tools due to the fact that the program doesn't work just by storing and retrieving data, it has a "learning" nature and can ``think" to predict future results with the data that it is given.
 
-One task of these machine learning algorithms is Classification, using them to classify the giving data based on the class's or ``labels" from the training data. 
+One task of these machine learning algorithms is classification, using them to classify the giving data based on the class's or ``labels" from the training data. 
 \section{EEG Basics}
 \todo{Describe the basic EEG signals}
-The EEG signals are expressd in time and frequencies.  Mu waves are located in the band 7 to \SI{13}{\hertz} and Beta waves are at \SI{13}{\hertz} and above \cite{classsvm} which, studies have showen that these waves were related to planning body movement.
+The EEG signals are expressd in time and frequencies.  Mu waves are located in the band 7 to \SI{13}{\hertz} and Beta waves are at \SI{13}{\hertz} and above \cite{classsvm} which, studies have shown that these waves were related to planning body movement.
 \section{Preprocessing}
 \todo{Maybe a bit about the wavelet transform.  We will see}
-\section{UCI EEG Dataset}
-The UCI tests dealt with acquiring EEG signals recorded from the subjects participating in the experiment.  UCI's dataset, which consists of $182$ subsets and $13$ attributes \cite{classsvm}, came from the EEG signals. $12$ of those attributes are the features and the last attribute is the label of the subset \cite{online}. 
-The subjects were asked to sleep for five minutes, then 
-wake them up, asking them to plan a movement for the following five seconds \cite{classsvm}. This was repeated over the course of about 30 minutes. Each subset is a five second fragment of the tests. The features of the samples were extracted from the EEG signals using a wavelet packet transform \cite{online}. 
-Coefficients are produced by the transform, called wavelets \cite{wavelet}. These wavelet coefficients are treated as ``features" that describe the original signal.
-The wavelet transform is similar to the Fourier Transform, so the features contain similar time-frequency characteristics as the FT \cite{packet}. 
-The features ultimately would describe where the subsets fall in the $7-13\si{\hertz}$ band that gives insight into whether the subject is relaxed or planning a movement.
+%\section{UCI EEG Dataset}
+
 
 \section{Materials and Methods}
 We used the following processing pipeline for obtaining the results:
@@ -53,8 +47,13 @@ We used the following processing pipeline for obtaining the results:
 
 Scikit-learn \todo{Create the citation for scikit-learn.  This can be obtained from the website} is a Python-based machine learning library that contains many tools and algorithms that are used to make predictions when introduced to new data. 
 
-The raw dataset was extracted from UCI's repository as a text file, and by using a Python script, the data was able to be expressed as numerical arrays, ready for use by the Scikit Learn library. Python is incapable of handling computations with matrices on its own so, NumPy was used. NumPy is another library in Python to deal with scientific computations and calculations, similar to using MatLab.
+The raw dataset was extracted from UCI's repository as a text file, and by using a Python script, the data was able to be expressed as numerical arrays, ready for use by the Scikit Learn library. %Python is incapable of handling computations with matrices on its own so, NumPy was used. %NumPy is another library in Python to deal with scientific computations and calculations, similar to using MatLab.
 
+The UCI tests dealt with acquiring EEG signals recorded from the subjects participating in the experiment.  UCI's dataset, which consists of $182$ subsets and $13$ attributes \cite{classsvm}, came from the EEG signals. $12$ of those attributes are the features and the last attribute is the label of the subset \cite{online}. 
+The subjects were asked to sleep for five minutes, then wake them up, asking them to plan a movement for the following five seconds \cite{classsvm}. This was repeated over the course of about 30 minutes. Each subset is a five second fragment of the tests. The features of the samples were extracted from the EEG signals using a wavelet packet transform \cite{online}. 
+Coefficients are produced by the transform, called wavelets \cite{wavelet}. These wavelet coefficients are treated as ``features" that describe the original signal.
+The wavelet transform is similar to the Fourier Transform, so the features contain similar time-frequency characteristics as the FT \cite{packet}. 
+The features ultimately would describe where the subsets fall in the $7-13\si{\hertz}$ band that gives insight into whether the subject is relaxed or planning a movement.
 \subsection{K-Nearest Neighbor}
 The first classification method used was the k-Nearest Neighbor algorithm.  This algorithm works by, in newly-introduced data, it recognizes patterns according to data around certain data points \cite{random}. The k-NN models use a user-defined parameter, $n$, that defines the number of points that the model looks out for around the tested data point. If the parameter is defined as "1," the model will search for the one point nearest to the test data and will make its assumptions to what classification it falls under. If the parameter is set to "2," the model with search for the nearest two points, if "3," so on and so forth. \todo{needs some work}  
 

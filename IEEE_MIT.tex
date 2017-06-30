@@ -4,8 +4,6 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{todonotes}
-%\renewcommand\thesection{\Roman{section}.}
-%\renewcommand\thesubsection{\thesection\Roman{subsection}}
 \renewcommand\arraystretch{1.2}
 \begin{document}
 \author{Christian Miranda}
@@ -26,16 +24,29 @@ UCI used various methods to interpret the EEG signals and in the end, classify t
 to accuracy. Some of the classifiers used here are similar to ones used by UCI and others that have used the same dataset \cite{fuzzy} which, the results to said tests, will be compared to the results of this report.
 
 \section{Machine Learning Basics}
-The algorithms find trends or patterns in the data and use them to make its decision-making but have to be trained first before it's able to output any results.  The patterns that it looks for is all based on the preliminary data that it is exposed to, to train itself. These algorithms are powerful tools due to the fact that the program doesn't work just by storing and retrieving data, it has a "learning" nature and can ``think" to predict future results with the data that it is given.
+The algorithms find trends or patterns in the data and use them to make its decision-making but have to be trained first before it's able to output any results. 
+The patterns that it looks for is all based on the preliminary data that it is exposed to, to train itself. These algorithms are powerful tools due to the fact that 
+the program doesn't work just by storing and retrieving data, it has a "learning" nature and can ``think" to predict future results with the data that it is given.
 
 One task of these machine learning algorithms is classification, using them to classify the giving data based on the class's or ``labels" from the training data. 
+
 \section{EEG Basics}
 \todo{Describe the basic EEG signals}
-The EEG signals are expressd in time and frequencies.  Mu waves are located in the band 7 to \SI{13}{\hertz} and Beta waves are at \SI{13}{\hertz} and above \cite{classsvm} which, studies have shown that these waves were related to planning body movement.
+The EEG signals are expressd in time and frequencies, gathered from electrodes connected to a subjects head. 
+Mu waves are located in the band $7 -13\si{\hertz}$ and Beta waves are at \SI{13}{\hertz} and above \cite{classsvm} which, 
+studies have shown that these waves were related to planning body movement.
+The UCI tests dealt with EEG signals recorded from the subjects participating in the experiment.  UCI's dataset, which consists of $182$ subsets and $13$ attributes \cite{classsvm}, 
+came from the EEG signals. $12$ of those attributes are the features and the last attribute is the label of the subset \cite{online}. 
+The subjects were asked to sleep for five minutes, then wake them up, asking them to plan a movement for the following five seconds \cite{classsvm}. This was repeated over 
+the course of about 30 minutes. Each subset is a five second fragment of the tests.
+
 \section{Preprocessing}
 \todo{Maybe a bit about the wavelet transform.  We will see}
-%\section{UCI EEG Dataset}
-
+The EEG signals had to go through a transformation process before being used.
+The features of the subsets were extracted from the EEG signals using a wavelet packet 
+transform \cite{online}. Coefficients are produced by the transform, called wavelets \cite{wavelet}. These wavelet coefficients are treated as ``features" that describe the 
+original signal. The wavelet transform is similar to the Fourier Transform, so the features contain similar time-frequency characteristics as the FT \cite{packet}. 
+The features ultimately would describe where the subsets fall in the $7-13\si{\hertz}$ band that gives insight into whether the subject is relaxed or planning a movement.
 
 \section{Materials and Methods}
 We used the following processing pipeline for obtaining the results:
@@ -45,17 +56,14 @@ We used the following processing pipeline for obtaining the results:
 \item Scikit-learn
 \end{enumerate}
 
-Scikit-learn \todo{Create the citation for scikit-learn.  This can be obtained from the website} is a Python-based machine learning library that contains many tools and algorithms that are used to make predictions when introduced to new data. 
+Scikit-learn \todo{Create the citation for scikit-learn.  This can be obtained from the website} is a Python-based machine learning library \cite{scikit} that contains many tools and algorithms that are used to make predictions when introduced to new data. 
 
-The raw dataset was extracted from UCI's repository as a text file, and by using a Python script, the data was able to be expressed as numerical arrays, ready for use by the Scikit Learn library. %Python is incapable of handling computations with matrices on its own so, NumPy was used. %NumPy is another library in Python to deal with scientific computations and calculations, similar to using MatLab.
+The raw dataset was extracted from UCI's repository as a text file, and by using a Python script, the data was able to be expressed as numerical arrays, ready for use by the Scikit Learn library. 
 
-The UCI tests dealt with acquiring EEG signals recorded from the subjects participating in the experiment.  UCI's dataset, which consists of $182$ subsets and $13$ attributes \cite{classsvm}, came from the EEG signals. $12$ of those attributes are the features and the last attribute is the label of the subset \cite{online}. 
-The subjects were asked to sleep for five minutes, then wake them up, asking them to plan a movement for the following five seconds \cite{classsvm}. This was repeated over the course of about 30 minutes. Each subset is a five second fragment of the tests. The features of the samples were extracted from the EEG signals using a wavelet packet transform \cite{online}. 
-Coefficients are produced by the transform, called wavelets \cite{wavelet}. These wavelet coefficients are treated as ``features" that describe the original signal.
-The wavelet transform is similar to the Fourier Transform, so the features contain similar time-frequency characteristics as the FT \cite{packet}. 
-The features ultimately would describe where the subsets fall in the $7-13\si{\hertz}$ band that gives insight into whether the subject is relaxed or planning a movement.
 \subsection{K-Nearest Neighbor}
-The first classification method used was the k-Nearest Neighbor algorithm.  This algorithm works by, in newly-introduced data, it recognizes patterns according to data around certain data points \cite{random}. The k-NN models use a user-defined parameter, $n$, that defines the number of points that the model looks out for around the tested data point. If the parameter is defined as "1," the model will search for the one point nearest to the test data and will make its assumptions to what classification it falls under. If the parameter is set to "2," the model with search for the nearest two points, if "3," so on and so forth. \todo{needs some work}  
+The first classification method used was the k-Nearest Neighbor algorithm.  This algorithm works by, in newly-introduced data, 
+it recognizes patterns according to data around certain data points \cite{random}. The k-NN models use a user-defined parameter, $n$, that defines the 
+number of closest training examples. The neighbors weigh in, in the decision of which class that the data points will fall under. \todo{needs some work}
 
 \subsection{Support Vector Machines}
 The second classifier that is being used is the Support Vector Machine. SVM models represent the data that was used to train itself, as a hyperplane \cite{classsvm}. The points of a specific class are mapped out as a group with gaps dividing all groups. So when the SVM is ran with the testing data, the data will fall under one of the groups. 
@@ -86,7 +94,8 @@ were used was to,
 specifically, one, subset everytime, meaning it uses the most training data.
 
 Starting with the k-NN classifier, since each subset falls under the class of "asleep" or "planning," the nearest neighbor parameter 
-was set to be "2." The idea is that every subset will look into the nearest two points and make a split decision between the two labels.
+was set to be "2." The idea is that every subset will look into the nearest two points and make a split decision between the two labels. 
+Table 1 shows the following results.
 \begin{table*}[h]
 	\noindent\makebox[\linewidth]{
 	\begin{tabular}{lccccccccc}
@@ -100,10 +109,10 @@ was set to be "2." The idea is that every subset will look into the nearest two 
 	\caption{Accuracies for k-NN Classifier}
 	\label{table1}
 \end{table*}
-\\ \noindent Next is the SVM classifier. The SVM has a parameter called a kernel. Kernels for the SVM include Linear, Polynomial, and Radial Basis Function. 
+
+Next is the SVM classifier, with Table 2 showing the results. The SVM has a parameter called a kernel. Kernels for the SVM include Linear, Polynomial, and Radial Basis Function. 
 For the RBF, it also has a input variable,  $\sigma$, and different values were experiemented with to find the best parameter. The kernel RBF with its 
-variable $\sigma$ = 5, was found to be the best choice. UCI also used SVMs with the best accuracy at \SI{71.43}{\percent} \cite{classsvm}. 
-The following table is the accuracies with these parameters,
+variable $\sigma$ = 5, was found to be the best choice.
 \begin{table*}[h]
 	\noindent\makebox[\linewidth]{
 	\begin{tabular}{lccccccccc}
@@ -117,8 +126,9 @@ The following table is the accuracies with these parameters,
 	\caption{Accuracies for SVM Classifier}
 	\label{table2}
 \end{table*}
-\\ \noindent Lastly, the Random Forest. The $n$ estimators parameter was chosen to be $30$ and the depth of each tree to be $3$. The results in experiment \cite{fuzzy}, using simulations with classifiers similar to Random Forest, resulted in accuracies of \SI{68.13}{\percent} and \SI{71.42}{\percent}.
-The following table has the results for this present report, 
+
+Table 3 contains the results of the Random Forest. The $n$ estimators parameter was chosen to be $30$ and the depth of each tree to be $3$. 
+Due to the nature of the Random Forest, each simulation was ran 15 times, accuracies collected, and averaged.
 \begin{table*}[h]
 	\noindent\makebox[\linewidth]{
 	\begin{tabular}{lccccccccc}
@@ -132,7 +142,12 @@ The following table has the results for this present report,
 	\caption{Accuracies for Random Forest Classifier}
 	\label{table3}
 \end{table*}
-\\ \noindent Due to the nature of the Random Forest, each simulation was ran 15 times, accuracies collected, and averaged.
+
+UCI's methodology consisted of also using SVMs \cite{classsvm}. The used half of the dataset to train with, and the other half to test it. 
+They used a RBF kernel with a parameter, $\sigma = 1.2$. They simulated the SVM ten times, averaged the accuracies, and achieved a score of \SI{71.43}{\percent} \cite{classsvm}.
+
+The results in experiment \cite{fuzzy}, using simulations with classifiers similar to Random Forest, resulted in accuracy \SI{71.42}{\percent}. They used half of UCIs dataset for 
+training and the other for training. After that, a two-fold cross-validation was perfromed six times. All scores were averaged as well.
 
 \section{Conclusion}
 From the resulting accuracies, one can observe that there is at least some consistency within the classifers. When compared to the results 

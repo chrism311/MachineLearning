@@ -4,6 +4,9 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{todonotes}
+\usepackage{tabularx}
+\usepackage{hhline}
+\usepackage{colortbl}
 \renewcommand\arraystretch{1.2}
 \begin{document}
 \author{Christian Miranda}
@@ -93,9 +96,27 @@ were used was to,
 \noindent With all that said, each classifer was ran numerous times at different cross validations for the k-fold and Cross-Val Score data selectors. Leave One Out leaves out 
 specifically, one, subset everytime, meaning it uses the most training data.
 
+In addtion to using these methods to split the data and for cross-validation, quick measurements were made using all the data to calculate the training accuracy. The three classifiers were 
+simpily trained using all of the subsets, and made to predict the labels using the exact same data. Table 1 shows the training accuracies.
+
+\begin{table}[h]
+\noindent\makebox[\linewidth]{
+	\begin{tabular}{lcccc}
+		\toprule
+		{} & \bf{K-NN} & \bf{SVM} & \bf{SVM} & \bf{Random Forest}\\
+		\midrule
+		Parameter & $k = 2$ & $\sigma = 1.2$ & $\sigma = 5$ & $n$ estimators = $30$\\
+		\bf{Accuracy} & \SI{80.77}{\percent} & \SI{80.23}{\percent} & \SI{99.45}{\percent} & \SI{73.62}{\percent}\\
+		\bottomrule
+	\end{tabular}
+}	
+	\caption{Training Accuracies}
+	\label{table1}
+\end{table}
+
 Starting with the k-NN classifier, since each subset falls under the class of "asleep" or "planning," the nearest neighbor parameter 
 was set to be "2." The idea is that every subset will look into the nearest two points and make a split decision between the two labels. 
-Table 1 shows the following results.
+Table 2 shows the following results.
 \begin{table*}[h]
 	\noindent\makebox[\linewidth]{
 	\begin{tabular}{lccccccccc}
@@ -107,10 +128,10 @@ Table 1 shows the following results.
 		\bottomrule		
 	\end{tabular}}
 	\caption{Accuracies for k-NN Classifier}
-	\label{table1}
+	\label{table2}
 \end{table*}
 
-Next is the SVM classifier, with Table 2 showing the results. The SVM has a parameter called a kernel. Kernels for the SVM include Linear, Polynomial, and Radial Basis Function. 
+Next is the SVM classifier, with Table 3 showing the results. The SVM has a parameter called a kernel. Kernels for the SVM include Linear, Polynomial, and Radial Basis Function. 
 For the RBF, it also has a input variable,  $\sigma$, and different values were experiemented with to find the best parameter. The kernel RBF with its 
 variable $\sigma$ = 5, was found to be the best choice.
 \begin{table*}[h]
@@ -124,10 +145,10 @@ variable $\sigma$ = 5, was found to be the best choice.
 		\bottomrule		
 	\end{tabular}}
 	\caption{Accuracies for SVM Classifier}
-	\label{table2}
+	\label{table3}
 \end{table*}
 
-Table 3 contains the results of the Random Forest. The $n$ estimators parameter was chosen to be $30$ and the depth of each tree to be $3$. 
+Table 4 contains the results of the Random Forest. The $n$ estimators parameter was chosen to be $30$ and the depth of each tree to be $3$. 
 Due to the nature of the Random Forest, each simulation was ran 15 times, accuracies collected, and averaged.
 \begin{table*}[h]
 	\noindent\makebox[\linewidth]{
@@ -140,14 +161,30 @@ Due to the nature of the Random Forest, each simulation was ran 15 times, accura
 		\bottomrule		
 	\end{tabular}}
 	\caption{Accuracies for Random Forest Classifier}
-	\label{table3}
+	\label{table4}
 \end{table*}
+
+Table 5 shows the Confusion Matrix of the SVM classifier. In this case, 36 subsets were used for testing.
+\begin{table}
+\begin{tabularx}{.7\textwidth}{>{\bfseries} c | c c | }
+& Relaxed & \multicolumn{1}{c}{Planning}\\
+\hhline{---}
+Relaxed & 20 (True Pos.) \cellcolor[gray]{.8}& 0 (False Neg.) \\ 
+Planning & 16 (False Pos.) & 0 (True Neg.) \cellcolor[gray]{.8} \\
+\hhline{~--}
+\end{tabularx}
+\caption{SVM Confusion Matrix}
+\label{table5}
+\end{table}
 
 UCI's methodology consisted of also using SVMs \cite{classsvm}. The used half of the dataset to train with, and the other half to test it. 
 They used a RBF kernel with a parameter, $\sigma = 1.2$. They simulated the SVM ten times, averaged the accuracies, and achieved a score of \SI{71.43}{\percent} \cite{classsvm}.
-
-The results in experiment \cite{fuzzy}, using simulations with classifiers similar to Random Forest, resulted in accuracy \SI{71.42}{\percent}. They used half of UCIs dataset for 
-training and the other for training. After that, a two-fold cross-validation was perfromed six times. All scores were averaged as well.
+The results in experiment \cite{fuzzy}, using simulations with classifiers similar to Random Forest, resulted in an accuracy of \SI{71.42}{\percent}. They used half of UCIs dataset for 
+training and the other for testing. After that, a two-fold cross-validation was perfromed six times. All scores were averaged as well.
+For comparison, we used a train/test split function in Scikit Learn that simply splits the data as was done in the papers previously mentioned. The SVM algorithm we used 
+was changed to use a parameter of $\sigma = 1.2$, simulated ten times, and averaged. The Random Forest classifier used the k-fold again, except for now, $k = 2$ and will be 
+ran 6 times and averaged with the score it achieves from the train/test split. Through these simulations, our SVM achived a \SI{71.42}{\percent} score and our 
+Random Forest achieved a score of \SI{70.20}{\percent}.
 
 \section{Conclusion}
 From the resulting accuracies, one can observe that there is at least some consistency within the classifers. When compared to the results 

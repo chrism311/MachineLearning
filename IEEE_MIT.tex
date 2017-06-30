@@ -19,19 +19,18 @@ In this research we apply 3 different machine learning algorithms to EEG signals
 \end{abstract}
 
 \section{Introduction}
-Using machine learning to make predictions and classify data is a relatively new field with wide applicability.  For instance machine learning has been used in self-driving cars, facial recognition, and apps that recognize your taste in music or movies \cite{machine} \cite{cars}.  Machine learning methods can have a very large societal impact as well, for example in the medical field researchers are creating an artificial pancreas that uses machine learning \cite{diabetes} to make predict the amount of insulin to release into the wearer.
+Using machine learning to make predictions and classify data is a relatively new field with wide applicability.  For instance machine learning has been used in self-driving cars, facial recognition, and apps that recognize your taste in music or movies \cite{machine,cars}.  Machine learning methods can have a very large societal impact as well, for example in the medical field researchers are creating an artificial pancreas that uses machine learning \cite{diabetes} to predict the amount of insulin needed to release into a patient.
 
-For this research we used the data in the University of California Irvine's repository in which researchers conducted an experiment with EEG signals \cite{classsvm}.  The subjects stayed in a state of rest followed by them planning to do a voluntary movement with their right hand. The dataset in the UCI repository used various methods to interpret the EEG signals and in the end, classify them into one of the two labels, asleep or planning. 
+Machine learning has been widely applied for EEG signals as well.  \todo{find another source for EEG research}  For this research we try to solve the problem of classifying data for an experiment in a planning or relaxed state.  used the data in the University of California Irvine's repository in which researchers conducted an experiment with EEG signals \cite{classsvm}.  In this experiment,\todo{find out what institution performed the experiment from the paper}  subjects stayed in a state of rest followed by performing a voluntary movement with their right hand. The problem is to analyze the EEG signals to classify each subject into one of the two states: asleep or planning. 
 
-We use newer machine learning methods to attempt to achieve similar or better results. Multiple classifiers were used in order to observe which one performed the best in regards to accuracy. Some of the classifiers used here are similar to ones used by UCI and others that have used the same dataset \cite{fuzzy} which, the results to said tests, will be compared to the results of this report.
+Our approach is to use newer machine learning methods to attempt to achieve similar or better results. We use 3 different algorithms to achieve the highest accuracy. %Some of the classifiers used here are similar to ones used by UCI and others that have used the same dataset \cite{fuzzy} which, the results to said tests, will be compared to the results of this report.
 
 \section{Machine Learning Basics}
-Machine learning algorithms 
-The algorithms find trends or patterns in the data and use them to make its decision-making but have to be trained first before it's able to output any results. 
-The patterns that it looks for is all based on the preliminary data that it is exposed to, to train itself. These algorithms are powerful tools due to the fact that 
-the program doesn't work just by storing and retrieving data, it has a "learning" nature and can ``think" to predict future results with the data that it is given.
+Machine learning has two major paradigms: supervised learning and unsupervised learning.  In supervised learning an algorithm is presented with a data set that contains data, often called features, along with a class label.  Unsupervised learning is often called unlabelled and is more difficult to determine the relationship between the classes and the features.  Both paradigms involve learning the relationship between a class label and its features via a numerical optimization problem \todo{cite any pattern recognition textbook...try Duda and Hart} 
+%The patterns that it looks for is all based on the preliminary data that it is exposed to, to train itself. These algorithms are powerful tools due to the fact that 
+This optimization leads to ``learning" in the sense that the weights can be used to predict results when presented with different data. %with the data that it is given.
 
-One task of these machine learning algorithms is classification, using them to classify the giving data based on the class's or ``labels" from the training data. 
+%One task of these machine learning algorithms is classification, using them to classify the giving data based on the class's or ``labels" from the training data. 
 
 \section{EEG Basics}
 EEG signals are functions of time and frequency, captured and recorded from electrodes connected to a subjects head. A recording captures these waves from the electrodes, their amplitudes being the frequency, emitted from the subjects brain.  
@@ -41,8 +40,8 @@ There are five stages of sleep:  stage 1, 2, 3, 4, and REM (rapid eye movement) 
 have to be present in the data, which indicate what sleep state in the data \cite{auto}. These indicators for sleep stage classification are sets of waves at certain frequencies. A graphical representation of various sleep stages was done in an experiment, resulting in a base to compare to the results of automated programs that seek to perform the same results. Alpha waves of bandwidth $8-12\si{\hertz}$, relate to state of being awake \cite{auto}. Theta waves of range to $4-8\si{\hertz}$ Hz are of stage 1, 2 and, REM sleep \cite{auto}.  Delta waves of $0.5-4\si{\hertz}$ are present in stages 3 and 4 \cite{auto}. Lastly, the K complex indicator are slow transient waves that are related to stage 2.  The waves of interest in this work are Mu waves that are located in the band $7 - 13\si{\hertz}$ and Beta waves are at \SI{13}{\hertz} and above \cite{classsvm}. Studies have shown that MU waves were related to planning body movement \cite{classsvm}.
 
 \section{Dataset description and generation}
-The dataset in the UCI repository dealt with EEG signals recorded from the subjects participating in the experiment.  UCI's repository dataset, which consists of $182$ subsets and $13$ attributes \cite{classsvm}, came from the EEG signals. $12$ of those attributes are the features and the last attribute is the label of the subset \cite{online}. 
-The subjects were asked to sleep for five minutes, then wake them up, asking them to plan a movement for the following five seconds \cite{classsvm}. This was repeated over the course of about 30 minutes. Each subset is a five second fragment of the tests.
+The dataset in the UCI repository contains data from EEG signals recorded from the \todo{how many subjects} subjects.  UCI's repository dataset, which consists of $182$ subsets and $13$ attributes \cite{classsvm}, came from the EEG signals. $12$ of those attributes are the features and the last attribute is the label of the subset \cite{online}. 
+The subjects were asked to sleep for five minutes, then they were awakened and asked to plan a movement for five seconds \cite{classsvm}. This was repeated over the course of about 30 minutes. \todo{check the methodology here...they would not be able to go to sleep again within the 30 minutes} Each subset is a five second fragment of the tests.
 
 \section{Preprocessing}
 To be usable in a machine learning algorithm, the EEG signals must be undergo preprocessing.  This preprocessing stage is typically signal conditioning followed by feature extraction.  This dataset was produced by transforming the EEG signals using a wavelet packet transform \cite{wavelet} . Coefficients are produced by the transform, called wavelets. The wavelet transform has similar qualities to the Fourier Transform, but also provides time-frequency characteristics% as the FT \cite{packet}. 
@@ -50,27 +49,22 @@ To be usable in a machine learning algorithm, the EEG signals must be undergo pr
 The features ultimately would describe where the subsets fall in the $7-13\si{\hertz}$ band where we can determine whether the subject is relaxed or planning a movement.
 
 \section{Materials and Methods}
-We used the following processing pipeline for obtaining the results:
-\begin{enumerate}
-\item NumPy
-\item SciPy
-\item Scikit-learn
-\end{enumerate}
+We used Python and scikit-learn's implementation of Random Forests, support vector machine and k nearest neighbor algorithms to obtain our results.  
 
-Scikit-learn is a Python-based machine learning library \cite{scikit} that contains many tools and algorithms that are used to make predictions when introduced to new data. 
+%Scikit-learn is a Python-based machine learning library \cite{scikit} that contains many tools and algorithms that are used to make predictions when introduced to new data. 
 
-The raw dataset was extracted from UCI's repository as a text file, and by using a Python script, the data was able to be expressed as numerical arrays, ready for use by the Scikit Learn library. 
+As mentioned in the previous section, we obtained the data from the machine learning repository of the University of California Irvine.%The raw dataset was extracted from UCI's repository as a text file, and by using a Python script, the data was able to be expressed as numerical arrays, ready for use by the Scikit Learn library. 
 
 \subsection{K-Nearest Neighbor}
-The first classification method used was the k-Nearest Neighbor algorithm.  This algorithm works by, in newly-introduced data, 
-it recognizes patterns according to data around certain data points \cite{random}. The k-NN models use a user-defined parameter, $n$, that defines the 
-number of closest training examples. The neighbors weigh in, in the decision of which class that the data points will fall under.
+Our first algorithm was the k-Nearest Neighbor (kNN) algorithm.  This algorithm classifies new data simply by determining which of $k$ clusters it is ``closest".%it recognizes patterns according to data around certain data points \cite{random}. 
+The kNN models use a user-defined parameter, $k$, that defines the number of clusters or classes. %The pattern is labeledThe neighbors weigh in, in the decision of which class that the data points will fall under.
 
 \subsection{Support Vector Machines}
-The second classifier that is being used is the Support Vector Machine. SVM models represent the data that was used to train itself, as a hyperplane \cite{classsvm}. The points of a specific class are mapped out as a group with gaps dividing all groups. So when the SVM is ran with the testing data, the data will fall under one of the groups. 
+Our second algorithm is the support vector machine (SVM).  The SVM algorithm works by determining an optimal hyperplane \cite{classsvm} that is subsequently used to classify new points. %The points of a specific class are mapped out as a group with gaps dividing all groups. So when the SVM is ran with the testing data, the data will fall under one of the groups. 
 
 \subsection{Random Forest}
-The last model used for classification is the Random Forest classifier. Random forest method is a type of Ensemble learning that uses a combination of several methods that make predictions and at the end, all the methods are used to make one final major prediction \cite{random}. When training the random forest model, it randomly creates "trees" using the training data. 
+Our last algorithm is  called the Random Forest classifier.  This is a type of Ensemble learning that uses a combination of several methods that make predictions and then all the methods combined to make one final major prediction \cite{random}. When training the random forest model, it randomly creates ``trees" using the training data. 
+
 These trees are called decision trees due to the fact that they are made up of multiple decisions that are used to classify the data each tree is presented with. This is one of the user-defined parameters , $n$ estimators, that tells the classifier how many trees to make \cite{scikit}. Another parameter is "max depth," which defines how many nodes are in each trees \cite{scikit}. Apparently, many of these decision-making trees are not very helpful on their own. So the way that the classifier works is that among the many bad trees there are still few that are very useful. When the classifer is making a prediction, the date gets passed through all the trees, where each tree assigns a label on the data \cite{random}. In the end, all the values given by the trees are summed up to make the final descision. The decisions from the non-helpful trees sometimes cancel out with the others, which makes the decisions from the good models to be more prominent.
 
 \subsection{Model Selection}
@@ -179,13 +173,15 @@ UCI's methodology consisted of also using SVMs \cite{classsvm}. The used half of
 They used a RBF kernel with a parameter, $\sigma = 1.2$. They simulated the SVM ten times, averaged the accuracies, and achieved a score of \SI{71.43}{\percent} \cite{classsvm}.
 The results in experiment \cite{fuzzy}, using simulations with classifiers similar to Random Forest, resulted in an accuracy of \SI{71.42}{\percent}. They used half of UCIs dataset for training and the other for testing. After that, a two-fold cross-validation was perfromed six times. All scores were averaged as well.  For comparison, we used a train/test split function in Scikit Learn that simply splits the data as was done in the papers previously mentioned. The SVM algorithm we used 
 was changed to use a parameter of $\sigma = 1.2$, simulated ten times, and averaged. The Random Forest classifier used the k-fold again, except for now, $k = 2$ and will be 
-ran 6 times and averaged with the score it achieves from the train/test split. Through these simulations, our SVM achived a \SI{71.42}{\percent} score and our 
+ran 6 times and averaged with the score it achieves from the train/test split. Through these simulations, our SVM archived a \SI{71.42}{\percent} score and our 
 Random Forest achieved a score of \SI{70.20}{\percent}.
-
+\begin{figure}
+\caption{ROC Curve for Classifier}
+\label{fg:ROC}
+\input{roc_plot.pgf}
+\end{figure}
 \section{Conclusion}
-From the resulting accuracies, one can observe that there is at least some consistency within the classifers. When compared to the results 
-achived by UCI and the Decision Tree test \cite{fuzzy}, the results in this report are not off to be considered a failure. In fact, they are very similar results,
-some even being better. The highest accuracy in this test was at \SI{73.87}{\percent} and the second best at \SI{73.63}{\percent}, both using the SVM. 
+From the resulting accuracies, one can observe that there is at least some consistency within the classifiers. When compared to the results archived by UCI and the Decision Tree test \cite{fuzzy}, the results in this report are not off to be considered a failure. In fact, they are very similar results,some even being better. The highest accuracy in this test was at \SI{73.87}{\percent} and the second best at \SI{73.63}{\percent}, both using the SVM. 
 This classifier performed better than the remaining two, but I think it was not all on its own. From the results, it seems that the models perform better when 
 more data is used on the classifer to train with. The Leave One Out cross-validation used all of the data to train expect for one subset, outputting the second 
 best accuracy and with 20 cross-validations, the best accuracy is achived. The more cross-validations, the more folds are made in the dataset, meaning all the folds but one, are 

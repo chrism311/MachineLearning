@@ -10,7 +10,7 @@
 \renewcommand\arraystretch{1.1}
 \begin{document}
 \author{Christian Miranda\\Department of Electrical Engineering\\University of Texas at Tyler}
-\title{Machine learning based EEG classification}
+\title{Machine Learning based EEG Classification}
 \maketitle
 
 \begin{abstract}
@@ -23,14 +23,12 @@ Using machine learning to make predictions and classify data is a relatively new
 
 Machine learning has been widely applied for EEG signals as well \cite{wavelet}. For this research we try to solve the problem of classifying data for an experiment in a planning or relaxed state.  used the data in the University of California Irvine's repository in which researchers conducted an experiment with EEG signals \cite{classsvm}.  In this experiment \cite{rp}, subjects stayed in a state of rest followed by performing a voluntary movement with their right hand. The problem is to analyze the EEG signals to classify each subject into one of the two states: asleep or planning. 
 
-Our approach is to use newer machine learning methods to attempt to achieve similar or better results. We use 3 different algorithms to achieve the highest accuracy. %Some of the classifiers used here are similar to ones used by UCI and others that have used the same dataset \cite{fuzzy} which, the results to said tests, will be compared to the results of this report.
+Our approach is to use newer machine learning methods to attempt to achieve similar or better results. We use 3 different algorithms to achieve the highest accuracy. 
 
 \section{Machine Learning Basics}
 Machine learning has two major paradigms: supervised learning and unsupervised learning.  In supervised learning an algorithm is presented with a data set that contains data, often called features, along with a class label.  Unsupervised learning is often called unlabelled and is more difficult to determine the relationship between the classes and the features.  Both paradigms involve learning the relationship between a class label and its features via a numerical optimization problem \cite{book}. 
-%The patterns that it looks for is all based on the preliminary data that it is exposed to, to train itself. These algorithms are powerful tools due to the fact that 
-This optimization leads to ``learning" in the sense that the weights can be used to predict results when presented with different data. %with the data that it is given.
 
-%One task of these machine learning algorithms is classification, using them to classify the giving data based on the class's or ``labels" from the training data. 
+This optimization leads to ``learning" in the sense that the weights can be used to predict results when presented with different data. 
 
 \section{EEG Basics}
 EEG signals are functions of time and frequency, captured and recorded from electrodes connected to a subjects head. A recording captures these waves from the electrodes, their amplitudes being the frequency, emitted from the subjects brain.  
@@ -51,16 +49,14 @@ The features ultimately would describe where the subsets fall in the $7-13\si{\h
 \section{Materials and Methods}
 We used Python and scikit-learn's implementation of Random Forests, support vector machine and k nearest neighbor algorithms to obtain our results.  
 
-%Scikit-learn is a Python-based machine learning library \cite{scikit} that contains many tools and algorithms that are used to make predictions when introduced to new data. 
-
-As mentioned in the previous section, we obtained the data from the machine learning repository of the University of California Irvine.%The raw dataset was extracted from UCI's repository as a text file, and by using a Python script, the data was able to be expressed as numerical arrays, ready for use by the Scikit Learn library. 
+As mentioned in the previous section, we obtained the data from the machine learning repository of the University of California Irvine.
 
 \subsection{K-Nearest Neighbor}
-Our first algorithm was the k-Nearest Neighbor (kNN) algorithm.  This algorithm classifies new data simply by determining which of $k$ clusters it is ``closest".%it recognizes patterns according to data around certain data points \cite{random}. 
-The kNN models use a user-defined parameter, $k$, that defines the number of clusters or classes. %The pattern is labeledThe neighbors weigh in, in the decision of which class that the data points will fall under.
+Our first algorithm was the k-Nearest Neighbor (kNN) algorithm.  This algorithm classifies new data simply by determining which of $k$ clusters it is ``closest."
+The kNN models use a user-defined parameter, $k$, that defines the number of clusters or classes. 
 
 \subsection{Support Vector Machines}
-Our second algorithm is the support vector machine (SVM).  The SVM algorithm works by determining an optimal hyperplane \cite{classsvm} that is subsequently used to classify new points. %The points of a specific class are mapped out as a group with gaps dividing all groups. So when the SVM is ran with the testing data, the data will fall under one of the groups. 
+Our second algorithm is the support vector machine (SVM).  The SVM algorithm works by determining an optimal hyperplane \cite{classsvm} that is subsequently used to classify new points. 
 
 \subsection{Random Forest}
 Our last algorithm is  called the Random Forest classifier.  This is a type of Ensemble learning that uses a combination of several methods that make predictions and then all the methods combined to make one final major prediction \cite{random}. When training the random forest model, it randomly creates ``trees" using the training data. 
@@ -180,6 +176,7 @@ Random Forest achieved a score of \SI{70.20}{\percent}.
 \label{fg:ROC}
 \input{roc_plot.pgf}
 \end{figure}
+
 \section{Conclusion}
 From the resulting accuracies, one can observe that there is at least some consistency within the classifiers. When compared to the results archived by UCI and the Decision Tree test \cite{fuzzy}, the results in this report are not off to be considered a failure. In fact, they are very similar results,some even being better. The highest accuracy in this test was at \SI{73.87}{\percent} and the second best at \SI{73.63}{\percent}, both using the SVM. 
 This classifier performed better than the remaining two, but I think it was not all on its own. From the results, it seems that the models perform better when 

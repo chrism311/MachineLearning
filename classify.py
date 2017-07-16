@@ -1,9 +1,11 @@
 import numpy as np
-from sklearn import ensemble, neighbors, svm, metrics, model_selection, gaussian_process
+from sklearn import ensemble, neighbors, svm, metrics, model_selection, gaussian_process, \
+	linear_model
 from sklearn.gaussian_process.kernels import RBF
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 import sys
+
 
 raw_data = np.genfromtxt('plrx.txt')					#reading data from txt file
 
@@ -11,9 +13,14 @@ X= raw_data[:,:12]							#splicing the raw data
 y = raw_data[:,-1]
 
 clf1 = neighbors.KNeighborsClassifier(n_neighbors= 2)			#k-NN classifier
-clf2 = svm.SVC(gamma = 5)						#SVM classifier
+clf2 = svm.SVC(gamma=5)						#SVM classifier
 clf3 = ensemble.RandomForestClassifier(n_estimators=30, max_depth=3)	#Random Forest classifier
-clf4 = gaussian_process.GaussianProcessClassifier(1*RBF([1]))		#Gaussian Process classifier
+clf4 = linear_model.Perceptron()
+clf5 = ensemble.ExtraTreesClassifier(n_estimators=30, max_depth=3)
+ada_clf = ensemble.AdaBoostClassifier(ensemble.RandomForestClassifier( \
+	max_depth= 2), n_estimators=50, algorithm="SAMME.R", learning_rate=0.5)
+vote_clf = ensemble.VotingClassifier(estimators=[('knn',clf1),('svm', clf2), \
+	('rf',clf3),('per', clf4),('tree',clf5), ('ada',ada_clf)], voting='hard')
 
 #Function for ROC curve
 probs=[]
@@ -92,14 +99,17 @@ if (len(sys.argv) < 2):
     exit()
 
 p=float(sys.argv[1])
-X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=1-p, random_state=0)
-clf2.fit(X_train,y_train)
-svm_score = clf2.score(X_test,y_test)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=1-p, random_state=0)
+
+for clf in (clf1, clf2, clf3, clf4, clf5,ada_clf, vote_clf):
+	clf.fit(X_train,y_train)
+	print clf.__class__.__name__, 100*clf.score(X_test,y_test)
 
 #print "\nUsing Leave One Out:\n","k-nn score:", 100*np.mean(knn_scores2)
-print "SVM score:",svm_score #100*np.mean(svm_scores2)
-#print "Random forest score:",100*np.mean(trees_scores2)
+#print "SVM score:",svm_score #100*np.mean(svm_scores2)
+#print "Random forest score:", rf_score #100*np.mean(trees_scores2)
 #print "Gaussian score:", 100*np.mean(gauss_scores2)
+#print "Tree score:", tree_score
 
 #Using cross validation score for the data
 #knn_scores3 = model_selection.cross_val_score(clf1, X, y, cv=5)		#cv=20 yields the best accuracy
@@ -114,3 +124,6 @@ print "SVM score:",svm_score #100*np.mean(svm_scores2)
 #fpr, tpr, thresholds = metrics.roc_curve(y,probs, pos_label=2)
 #plot_roc(tpr,fpr,thresholds)
 #print "AUC: ", metrics.auc(fpr,tpr)
+
+
+

@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn import svm, ensemble, model_selection
+import sys
 
 raw_data = np.genfromtxt('plrx.txt')
 
@@ -9,7 +10,8 @@ y = raw_data[:, -1]
 clf1 = svm.SVC(gamma = 1.2)
 clf2 = ensemble.RandomForestClassifier(n_estimators=30, max_depth=3)
 
-X_train, X_test, y_train, y_test = model_selection.train_test_split(X,y, test_size=0.5)
+X_train, X_test, y_train, y_test = model_selection.train_test_split(X,y, test_size=float(sys.argv[1]))
+
 
 #SVM 50/50 split and averaged 10 times
 svm_scores=[]

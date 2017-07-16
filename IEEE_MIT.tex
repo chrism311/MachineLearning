@@ -1,0 +1,191 @@
+\documentclass[conference,compsoc]{IEEEtran}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{todonotes}
+\usepackage{tabularx}
+\usepackage{hhline}
+\usepackage{colortbl}
+\renewcommand\arraystretch{1.1}
+\begin{document}
+\author{Christian Miranda\\Department of Electrical Engineering\\University of Texas at Tyler}
+\title{Machine Learning based EEG Classification}
+\maketitle
+
+\begin{abstract}
+In this research we apply 3 different machine learning algorithms to EEG signals in order to determine whether the patient is in a planning state or a relaxed state.  We achieved superior results to previous research in this area, thereby validating a machine learning based approach to this problem.
+
+\end{abstract}
+
+\section{Introduction}
+Using machine learning to make predictions and classify data is a relatively new field with wide applicability.  For instance machine learning has been used in self-driving cars, facial recognition, and apps that recognize your taste in music or movies \cite{machine,cars}.  Machine learning methods can have a very large societal impact as well, for example in the medical field researchers are creating an artificial pancreas that uses machine learning \cite{diabetes} to predict the amount of insulin needed to release into a patient.
+
+Machine learning has been widely applied for EEG signals as well \cite{wavelet}. For this research we try to solve the problem of classifying data for an experiment in a planning or relaxed state.  used the data in the University of California Irvine's repository in which researchers conducted an experiment with EEG signals \cite{classsvm}.  In this experiment \cite{rp}, subjects stayed in a state of rest followed by performing a voluntary movement with their right hand. The problem is to analyze the EEG signals to classify each subject into one of the two states: asleep or planning. 
+
+Our approach is to use newer machine learning methods to attempt to achieve similar or better results. We use 3 different algorithms to achieve the highest accuracy. 
+
+\section{Machine Learning Basics}
+Machine learning has two major paradigms: supervised learning and unsupervised learning.  In supervised learning an algorithm is presented with a data set that contains data, often called features, along with a class label.  Unsupervised learning is often called unlabelled and is more difficult to determine the relationship between the classes and the features.  Both paradigms involve learning the relationship between a class label and its features via a numerical optimization problem \cite{book}. 
+
+This optimization leads to ``learning" in the sense that the weights can be used to predict results when presented with different data. 
+
+\section{EEG Basics}
+EEG signals are functions of time and frequency, captured and recorded from electrodes connected to a subjects head. A recording captures these waves from the electrodes, their amplitudes being the frequency, emitted from the subjects brain.  
+Using EEG to classify different stages of sleep is a very important topic \cite{auto}.
+
+There are five stages of sleep:  stage 1, 2, 3, 4, and REM (rapid eye movement) \cite{sleep}. When classifying the sleep stages, indicators 
+have to be present in the data, which indicate what sleep state in the data \cite{auto}. These indicators for sleep stage classification are sets of waves at certain frequencies. A graphical representation of various sleep stages was done in an experiment, resulting in a base to compare to the results of automated programs that seek to perform the same results. Alpha waves of bandwidth $8-12\si{\hertz}$, relate to state of being awake \cite{auto}. Theta waves of range to $4-8\si{\hertz}$ Hz are of stage 1, 2 and, REM sleep \cite{auto}.  Delta waves of $0.5-4\si{\hertz}$ are present in stages 3 and 4 \cite{auto}. Lastly, the K complex indicator are slow transient waves that are related to stage 2.  The waves of interest in this work are Mu waves that are located in the band $7 - 13\si{\hertz}$ and Beta waves are at \SI{13}{\hertz} and above \cite{classsvm}. Studies have shown that MU waves were related to planning body movement \cite{classsvm}.
+
+\section{Dataset description and generation}
+The dataset in the UCI repository contains data from EEG signals recorded from a subject of 25 years of age, collected 5 times about a span of various days \cite{online}.  UCI's repository dataset, which consists of $182$ subsets and $13$ attributes \cite{classsvm}, came from the EEG signals. $12$ of those attributes are the features and the last attribute is the label of the subset \cite{online}. 
+The subjects were asked to sleep for five minutes, then they were awakened and asked to plan a movement for five seconds \cite{classsvm}. Each expierment lasted about 30 minutes, in the end, collecting 5 complete trials \cite{online}. Each subset is a five second fragment of the tests.
+
+\section{Preprocessing}
+To be usable in a machine learning algorithm, the EEG signals must be undergo preprocessing.  This preprocessing stage is typically signal conditioning followed by feature extraction.  This dataset was produced by transforming the EEG signals using a wavelet packet transform \cite{wavelet} . Coefficients are produced by the transform, called wavelets. The wavelet transform has similar qualities to the Fourier Transform, but also provides time-frequency characteristics% as the FT \cite{packet}. 
+
+The features ultimately would describe where the subsets fall in the $7-13\si{\hertz}$ band where we can determine whether the subject is relaxed or planning a movement.
+
+\section{Materials and Methods}
+We used Python and scikit-learn's implementation of Random Forests, support vector machine and k nearest neighbor algorithms to obtain our results.  
+
+As mentioned in the previous section, we obtained the data from the machine learning repository of the University of California Irvine.
+
+\subsection{K-Nearest Neighbor}
+Our first algorithm was the k-Nearest Neighbor (kNN) algorithm.  This algorithm classifies new data simply by determining which of $k$ clusters it is ``closest."
+The kNN models use a user-defined parameter, $k$, that defines the number of clusters or classes. 
+
+\subsection{Support Vector Machines}
+Our second algorithm is the support vector machine (SVM).  The SVM algorithm works by determining an optimal hyperplane \cite{classsvm} that is subsequently used to classify new points. 
+
+\subsection{Random Forest}
+Our last algorithm is  called the Random Forest classifier.  This is a type of Ensemble learning that uses a combination of several methods that make predictions and then all the methods combined to make one final major prediction \cite{random}. When training the random forest model, it randomly creates ``trees" using the training data. 
+
+These trees are called decision trees due to the fact that they are made up of multiple decisions that are used to classify the data each tree is presented with. This is one of the user-defined parameters , $n$ estimators, that tells the classifier how many trees to make \cite{scikit}. Another parameter is "max depth," which defines how many nodes are in each trees \cite{scikit}. Apparently, many of these decision-making trees are not very helpful on their own. So the way that the classifier works is that among the many bad trees there are still few that are very useful. When the classifer is making a prediction, the date gets passed through all the trees, where each tree assigns a label on the data \cite{random}. In the end, all the values given by the trees are summed up to make the final descision. The decisions from the non-helpful trees sometimes cancel out with the others, which makes the decisions from the good models to be more prominent.
+
+\subsection{Model Selection}
+The data that is used for the classifiers has to be properly prepared for use. Out of the $182$ samples from the dataset, a certain percentage has to be set aside to train the algorithms in the classifiers, leaving the rest of the samples to be used as testing data. The reason for this is the fact that it is not practical to just use all of the data to train the classifier and then go back with the same data to test it. In that situation, you're leaving the classifier to predict something it already knows. 
+So three functions in the Scikit Learn library were used to automatically split-up what in the dataset is used for training, and what is used for testing. 
+
+K-fold is a cross-validator that splits up the data into training/test sets. A value of $k$ is given to the k-fold function which is a cross-validation parameter. The way it works is, $k$ determines the number of times the entire dataset is "folded," where each fold is validated once and the remainder are used to make the training data. 
+The second cross-validator is Leave One Out. It runs through the dataset and puts one subset aside to use to test. The last cross-validator is the Cross-Validation Score function, which is fairly identical to k-fold. This was used to double check on consistency.
+
+For k-fold and Cross-Val Score, each validation, which is again determined by the CV parameter, outputs a percentage-accuracy score. So all scores in each simulation were appended into an empty array and averaged at the end of the simulations to determine the overall accuracy of each run.
+
+\section{Results}
+Different classifiers were used to see how each one performed in terms of accuracy, since each one works differently. The reason why different data selection models 
+were used was to,
+\begin{description}
+	\item[$\bullet$] have some data to train with and data that the classifier has not seen to use and test it with,
+	\item[$\bullet$] observe that there is at least some consistency in how each classifier performs,
+	\item[$\bullet$] and finally, to see how much the amount of training data used to train with, affects the accuracy.
+\end{description}
+\noindent With all that said, each classifer was ran numerous times at different cross validations for the k-fold and Cross-Val Score data selectors. Leave One Out leaves out specifically, one, subset everytime, meaning it uses the most training data.
+
+In addtion to using these methods to split the data and for cross-validation, quick measurements were made using all the data to calculate the training accuracy. The three classifiers were simply trained using all of the subsets, and made to predict the labels using the exact same data. Table 1 shows the training accuracies.
+
+\begin{table}[h]
+	\caption{Training Accuracies}
+	\label{table1}
+\noindent\makebox[\linewidth]{
+	\begin{tabular}{lcccc}
+		\toprule
+		{} & \bf{K-NN} & \bf{SVM} & \bf{SVM} & \bf{Random Forest}\\
+		\midrule
+		Parameter & $k = 2$ & $\sigma = 1.2$ & $\sigma = 5$ & $n$ estimators = $30$\\
+		\bf{Accuracy} & \SI{80.77}{\percent} & \SI{80.23}{\percent} & \SI{99.45}{\percent} & \SI{73.62}{\percent}\\
+		\bottomrule
+	\end{tabular}
+}	
+
+\end{table}
+
+Starting with the k-NN classifier, since each subset falls under the class of "asleep" or "planning," the nearest neighbor parameter 
+was set to be "2." The idea is that every subset will look into the nearest two points and make a split decision between the two labels. 
+Table \ref{table2} shows the following results.
+\begin{table*}
+	\caption{Accuracies for k-NN Classifier}
+	\label{table2}
+	\noindent\makebox[\linewidth]{
+	\begin{tabular}{lccccccccc}
+		\toprule
+		{} & \bf{Leave One Out} & \multicolumn{4}{c}{\bf{K-Fold}} & \multicolumn{4}{c}{\bf{Cross-Val Score}} \\
+		\midrule
+		Cross Validation & {---} & CV = 5 & CV = 10 & CV = 15 & CV = 20 & CV = 5 & CV = 10 & CV = 15 & CV = 20 \\
+		Accuracy & \SI{70.33}{\percent} & \SI{66.46}{\percent} & \SI{69.21}{\percent} & \SI{70.34}{\percent} & \SI{70.38}{\percent} & \SI{69.28}{\percent} & \SI{70.4}{\percent} & \SI{69.04}{\percent} & \SI{70.79}{\percent}\\
+		\bottomrule		
+	\end{tabular}}
+
+\end{table*}
+
+Next is the SVM classifier, with Table \ref{table3} showing the results. The SVM has a parameter called a kernel. Kernels for the SVM include Linear, Polynomial, and Radial Basis Function.  For the RBF, it also has a input variable,  $\sigma$, and different values were experiemented with to find the best parameter. The kernel RBF with its variable $\sigma=5$, was found to be the best choice.
+\begin{table*}
+	\caption{Accuracies for SVM Classifier}
+	\label{table3}
+	\noindent\makebox[\linewidth]{
+	\begin{tabular}{lccccccccc}
+		\toprule
+		{} & \bf{Leave One Out} & \multicolumn{4}{c}{\bf{K-Fold}} & \multicolumn{4}{c}{\bf{Cross-Val Score}} \\
+		\midrule
+		Cross Validation & {---} & CV = 5 & CV = 10 & CV = 15 & CV = 20 & CV = 5 & CV = 10 & CV = 15 & CV = 20 \\
+		Accuracy & \SI{73.63}{\percent} & \SI{71.38}{\percent} & \SI{72.49}{\percent} & \SI{71.37}{\percent} & \SI{73.61}{\percent} & \SI{72.55}{\percent} & \SI{72.57}{\percent} & \SI{73.87}{\percent} & \SI{72.92}{\percent}\\
+		\bottomrule		
+	\end{tabular}}
+
+\end{table*}
+
+Table \ref{table4} contains the results of the Random Forest. The $n$ estimators parameter was chosen to be $30$ and the depth of each tree to be $3$. Due to the nature of the Random Forest, each simulation was ran 15 times, accuracies collected, and averaged.
+\begin{table*}
+	\caption{Accuracies for Random Forest Classifier}
+	\label{table4}
+	\noindent\makebox[\linewidth]{
+	\begin{tabular}{lccccccccc}
+		\toprule
+		{} & \bf{Leave One Out} & \multicolumn{4}{c}{\bf{K-Fold}} & \multicolumn{4}{c}{\bf{Cross-Val Score}} \\
+		\midrule
+		Cross Validation & {---} & CV = 5 & CV = 10 & CV = 15 & CV = 20 & CV = 5 & CV = 10 & CV = 15 & CV = 20 \\
+		Accuracy & \SI{71.28}{\percent} & \SI{70.5}{\percent} & \SI{70.26}{\percent} & \SI{71.37}{\percent} & \SI{71.5}{\percent} & \SI{71.15}{\percent} & \SI{71.5}{\percent} & \SI{71.55}{\percent} & \SI{71.5}{\percent}\\
+		\bottomrule		
+	\end{tabular}}
+
+\end{table*}
+
+Table \ref{table5} shows the Confusion Matrix of the SVM classifier. In this case, $36$ subsets were used for testing.
+\begin{table}
+\centering
+\caption{SVM Confusion Matrix}
+\label{table5}
+\begin{tabularx}{.7\textwidth}{>{\bfseries} c | c c | }
+& Relaxed & \multicolumn{1}{c}{Planning}\\
+\hhline{---}
+Relaxed & 20 (True Pos.) \cellcolor[gray]{.8}& 0 (False Neg.) \\ 
+Planning & 16 (False Pos.) & 0 (True Neg.) \cellcolor[gray]{.8} \\
+\hhline{~--}
+\end{tabularx}
+
+\end{table}
+
+UCI's methodology consisted of also using SVMs \cite{classsvm}. The used half of the dataset to train with, and the other half to test it. 
+They used a RBF kernel with a parameter, $\sigma = 1.2$. They simulated the SVM ten times, averaged the accuracies, and achieved a score of \SI{71.43}{\percent} \cite{classsvm}.
+The results in experiment \cite{fuzzy}, using simulations with classifiers similar to Random Forest, resulted in an accuracy of \SI{71.42}{\percent}. They used half of UCIs dataset for training and the other for testing. After that, a two-fold cross-validation was perfromed six times. All scores were averaged as well.  For comparison, we used a train/test split function in Scikit Learn that simply splits the data as was done in the papers previously mentioned. The SVM algorithm we used 
+was changed to use a parameter of $\sigma = 1.2$, simulated ten times, and averaged. The Random Forest classifier used the k-fold again, except for now, $k = 2$ and will be 
+ran 6 times and averaged with the score it achieves from the train/test split. Through these simulations, our SVM archived a \SI{71.42}{\percent} score and our 
+Random Forest achieved a score of \SI{70.20}{\percent}.
+\begin{figure}
+\caption{ROC Curve for Classifier}
+\label{fg:ROC}
+\input{roc_plot.pgf}
+\end{figure}
+
+\section{Conclusion}
+From the resulting accuracies, one can observe that there is at least some consistency within the classifiers. When compared to the results archived by UCI and the Decision Tree test \cite{fuzzy}, the results in this report are not off to be considered a failure. In fact, they are very similar results,some even being better. The highest accuracy in this test was at \SI{73.87}{\percent} and the second best at \SI{73.63}{\percent}, both using the SVM. 
+This classifier performed better than the remaining two, but I think it was not all on its own. From the results, it seems that the models perform better when 
+more data is used on the classifer to train with. The Leave One Out cross-validation used all of the data to train expect for one subset, outputting the second 
+best accuracy and with 20 cross-validations, the best accuracy is achived. The more cross-validations, the more folds are made in the dataset, meaning all the folds but one, are 
+used to train with. In the end, it seems that more data from the same experiment would benefit the models used here. It seems 182 samples might not be enough for them and more training data, would bring better results. 
+Another possible approach for better results would be exploring other methods but with these tests and the ones conducted by others, it seems the issues might come from the data and not so much the methodology.
+
+
+\bibliographystyle{unsrt}
+\bibliography{bib}
+\end{document}

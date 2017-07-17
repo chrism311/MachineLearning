@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn import ensemble, neighbors, svm, metrics, model_selection, gaussian_process, \
-	linear_model
+	linear_model, tree
 from sklearn.gaussian_process.kernels import RBF
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
@@ -12,15 +12,20 @@ raw_data = np.genfromtxt('plrx.txt')					#reading data from txt file
 X= raw_data[:,:12]							#splicing the raw data
 y = raw_data[:,-1]
 
+SVM_parameters = {'kernel':('linear','rbf', 'poly'), 'degree':[1,10], 'C':[1,10], 'gamma':[0,5]}
+RF_parameters = {'n_estimators':[1,500], 'max_depth':[1,10], 'min_samples_split':[2,10], 'min_samples_leaf':[1,10]}
+
 clf1 = neighbors.KNeighborsClassifier(n_neighbors= 2)			#k-NN classifier
 clf2 = svm.SVC(gamma=5)						#SVM classifier
 clf3 = ensemble.RandomForestClassifier(n_estimators=30, max_depth=3)	#Random Forest classifier
 clf4 = linear_model.Perceptron()
 clf5 = ensemble.ExtraTreesClassifier(n_estimators=30, max_depth=3)
-ada_clf = ensemble.AdaBoostClassifier(ensemble.RandomForestClassifier( \
-	max_depth= 2), n_estimators=50, algorithm="SAMME.R", learning_rate=0.5)
+ada_clf = ensemble.AdaBoostClassifier(tree.DecisionTreeClassifier( \
+	max_depth=2), n_estimators=50, algorithm="SAMME.R", learning_rate=0.5)
+grid_SVM = model_selection.GridSearchCV(clf2, SVM_parameters)
+grid_RF = model_selection.GridSearchCV(clf3, RF_parameters)
 vote_clf = ensemble.VotingClassifier(estimators=[('knn',clf1),('svm', clf2), \
-	('rf',clf3),('per', clf4),('tree',clf5), ('ada',ada_clf)], voting='hard')
+	('rf',clf3),('per', clf4),('tree',clf5), ('ada',ada_clf), ('gSVM',grid_SVM), ('gRF', grid_RF)], voting='hard')
 
 #Function for ROC curve
 probs=[]
@@ -101,7 +106,7 @@ if (len(sys.argv) < 2):
 p=float(sys.argv[1])
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=1-p, random_state=0)
 
-for clf in (clf1, clf2, clf3, clf4, clf5,ada_clf, vote_clf):
+for clf in (clf1, clf2, clf3, clf4, clf5,ada_clf, grid_SVM, grid_RF, vote_clf):
 	clf.fit(X_train,y_train)
 	print clf.__class__.__name__, 100*clf.score(X_test,y_test)
 

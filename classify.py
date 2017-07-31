@@ -42,33 +42,36 @@ def plot_roc(tpr,fpr,thresholds):
 #   plt.savefig('roc_plot.pgf')
    plt.show()
 
-#function for k-Fold
-def KFOLD(X,y):	
-	kf = model_selection.KFold(n_splits=5 )				#n_splits=20 yields the best accuracy
-	for train , test in kf.split(X):
-		X_train, X_test = X[train], X[test]
-		y_train, y_test = y[train], y[test]
-	return {'Xtrain':X_train, 'ytrain':y_train, 'Xtest':X_test, 'ytest':y_test}
+#empty arrays for k-fols=d scores
+knn_scores1 = []
+svm_scores1= [] 
+trees_scores1 = []
+gauss_scores1 = []
 
-#clf1.fit(KFOLD(X,y)['Xtrain'],KFOLD(X,y)['ytrain'])
-#clf2.fit(KFOLD(X,y)['Xtrain'],KFOLD(X,y)['ytrain'])
-#clf3.fit(KFOLD(X,y)['Xtrain'],KFOLD(X,y)['ytrain'])
-#clf4.fit(KFOLD(X,y)['Xtrain'],KFOLD(X,y)['ytrain'])
-#acc_knn1= clf1.score(KFOLD(X,y)['Xtest'],KFOLD(X,y)['ytest'])
-#acc_svm1= clf2.score(KFOLD(X,y)['Xtest'],KFOLD(X,y)['ytest'])
-#acc_trees1= clf3.score(KFOLD(X,y)['Xtest'],KFOLD(X,y)['ytest'])
-#acc_gauss1= clf4.score(KFOLD(X,y)['Xtest'],KFOLD(X,y)['ytest'])
-#knn_scores1.append(acc_knn1)
-#svm_scores1.append(acc_svm1)
-#trees_scores1.append(acc_trees1)
-#gauss_scores1.append(acc_gauss1)
-#cf = metrics.confusion_matrix(KFOLD(X,y)['ytest'], clf2.predict(KFOLD(X,y)['Xtest']))
+#k-Fold
+kf = model_selection.KFold(n_splits=5 )				#n_splits=20 yields the best accuracy
+for train , test in kf.split(X):
+	clf1.fit(X[train],y[train])
+	clf2.fit(X[train],y[train])
+	clf3.fit(X[train],y[train])
+	clf4.fit(X[train],y[train])
+	acc_knn1= clf1.score(X[test],y[test])
+	acc_svm1= clf2.score(X[test],y[test])
+	acc_trees1= clf3.score(X[test],y[test])
+	acc_gauss1= clf4.score(X[test],y[test])
+	knn_scores1.append(acc_knn1)
+	svm_scores1.append(acc_svm1)
+	trees_scores1.append(acc_trees1)
+	gauss_scores1.append(acc_gauss1)
+	KNN_cf = metrics.confusion_matrix(y[test], clf1.predict(X[test]))
+	SVM_cf = metrics.confusion_matrix(y[test], clf2.predict(X[test]))
+	RF_cf = metrics.confusion_matrix(y[test], clf3.predict(X[test]))
 
-#print cf
-#print "\nUsing k-fold:\n", "k-NN score: ",100*np.mean(knn_scores1)
-#print"SVM score: ", 100*np.mean(svm_scores1)
-#print "Random Forest score: ", 100*np.mean(trees_scores1)
-#print "Gaussian score:", 100*np.mean(gauss_scores1)
+print"KNN cf:\n", KNN_cf,"\nSVM cf:\n" ,SVM_cf, "\nRF cf:\n", RF_cf
+print "\nUsing k-fold:\n", "k-NN score: ",100*np.mean(knn_scores1)
+print"SVM score: ", 100*np.mean(svm_scores1)
+print "Random Forest score: ", 100*np.mean(trees_scores1)
+print "Gaussian score:", 100*np.mean(gauss_scores1)
 
 #Scores for Leave One Out CV
 knn_scores2 = []
